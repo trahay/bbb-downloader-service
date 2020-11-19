@@ -1,11 +1,13 @@
 #!/bin/bash
 
-if [ ! -f config.sh ]; then
-    echo "Please edit config.sh" >&2
+prefix=$(dirname $(realpath $0))
+
+if [ ! -f $prefix/config.sh ]; then
+    echo "Please edit $prefix/config.sh" >&2
     exit 1
 fi
 
-source config.sh
+source $prefix/config.sh
 
 if [ ! -f "$BBB_DOWNLOADER_ROOT/capture-full-replay.sh" ];then
     echo "Cannot find $BBB_DOWNLOADER_ROOT/capture-full-replay.sh" >&2
@@ -40,7 +42,6 @@ function getvalue() {
 }
 
 if [ -n $MAX_CONCURRENT_TASKS ]; then  
-    echo tsp -S $MAX_CONCURRENT_TASKS
     tsp -S $MAX_CONCURRENT_TASKS
     if [ $? -ne 0 ]; then
 	echo "tsp -S $MAX_CONCURRENT_TASKS failed" >&2
