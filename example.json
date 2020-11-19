@@ -1,0 +1,9 @@
+{
+    "url": "https://bbb-node.imtbs-tsp.eu/playback/presentation/2.0/playback.html?meetingId=fb8a9cb664e003d61d06e6c7f71196fb9b2c0922-1588666735451",
+    "main_only": "yes",
+    "output_file": "plop.mp4",
+    "startup_duration": "10",
+    "stop_duration": "15",
+    "dont_crop": "y",
+    "save_files": "y"
+}
