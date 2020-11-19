@@ -38,3 +38,4 @@ Copy a `request.json` file into the input directory. The request file contains t
 }
 ```
 
+The watchdog will detect this new file, and enqueue a task in charge of downloading the presentation.
