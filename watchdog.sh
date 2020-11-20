@@ -55,7 +55,12 @@ inotifywait -m $INPUT_DIR -e create -e moved_to |
     while read dir action file; do
 
 	input_file="$INPUT_DIR/$file"
-        echo "The file '$input_file' appeared"
+        if ! [ -r "$input_file" ]; then
+	    echo "The file '$input_file' appeared, but it is not readable !" >&2
+	    continue
+	fi
+	echo "The file '$input_file' appeared"
+
 	url=$(getvalue "$input_file" "url" )
 	startup=$(getvalue "$input_file" "startup_duration")
 	stop=$(getvalue "$input_file" "stop_duration")
