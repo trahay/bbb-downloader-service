@@ -34,7 +34,8 @@ Copy a `request.json` file into the input directory. The request file contains t
     "startup_duration": "10",
     "stop_duration": "15",
     "dont_crop": "y",
-    "save_files": "y"
+    "save_files": "y",
+    "output_dir": "example"
 }
 ```
 

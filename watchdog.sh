@@ -41,6 +41,7 @@ function getvalue() {
     echo $value
 }
 
+unset TMPDIR
 if [ -n $MAX_CONCURRENT_TASKS ]; then  
     tsp -S $MAX_CONCURRENT_TASKS
     if [ $? -ne 0 ]; then
@@ -52,9 +53,9 @@ fi
 
 inotifywait -m $INPUT_DIR -e create -e moved_to |
     while read dir action file; do
-        echo "The file '$file' appeared in directory '$dir' via '$action'"
 
 	input_file="$INPUT_DIR/$file"
+        echo "The file '$input_file' appeared"
 	url=$(getvalue "$input_file" "url" )
 	startup=$(getvalue "$input_file" "startup_duration")
 	stop=$(getvalue "$input_file" "stop_duration")
@@ -62,8 +63,14 @@ inotifywait -m $INPUT_DIR -e create -e moved_to |
 	crop=$(getvalue "$input_file" "dont_crop")
 	output_file=$(getvalue "$input_file" "output_file")
 	save=$(getvalue "$input_file" "save_files")
+	output_dir=$(getvalue "$input_file" "output_dir")
 
-	tmp_dir=$(mktemp -d -p $OUTPUT_DIR)
+	if [ -n "$output_dir" ] && [ ! -d "$output_dir" ]; then
+	    tmp_dir="$OUTPUT_DIR/$output_dir"
+	    mkdir -p $tmp_dir || continue
+	else
+	    tmp_dir=$(mktemp -d -p $OUTPUT_DIR)
+	fi
         echo "Saving file '$file' into $tmp_dir"
 	export TMPDIR=$(realpath $tmp_dir)
 	mv $input_file $tmp_dir
@@ -86,15 +93,12 @@ inotifywait -m $INPUT_DIR -e create -e moved_to |
 	    cmd="$cmd -o $output_file"
 	fi
 	if [ -n "$save" ]; then
-	    cmd="$cmd -s";
+	    cmd="$cmd -S";
 	fi
 	cmd="$cmd $url"
 
+	# enqueue the task
 	echo tsp $cmd
 	tsp $cmd
-#	$cmd
 	cd -
-
-	#	mv "$INPUT_DIR/$file" $OUTPUT_DIR
-        # do something with the file
     done
